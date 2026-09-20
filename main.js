@@ -377,7 +377,7 @@ function monitorApps() {
             // 30 SECOND ATTACK
             // =================================
 
-            if (seconds >= 1800) {
+            if (seconds >= 30) {
 
                 attacking = true;
 
