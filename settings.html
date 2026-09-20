@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lion Focus Settings</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 420px;
+    padding: 30px;
+}
+
+.title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #aaa;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.app-btn {
+    height: 70px;
+    border: 1px solid #333;
+    border-radius: 14px;
+    background: #1c1c1c;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.app-btn:hover {
+    background: #292929;
+}
+
+.app-btn.selected {
+    background: #7ed957;
+    color: #111;
+    border-color: #7ed957;
+    font-weight: bold;
+}
+
+.time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.time-btn {
+    height: 55px;
+    border: 1px solid #333;
+    border-radius: 14px;
+    background: #1c1c1c;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.time-btn:hover {
+    background: #292929;
+}
+
+.time-btn.selected {
+    background: #7ed957;
+    color: #111;
+    border-color: #7ed957;
+    font-weight: bold;
+}
+
+.selected-info {
+    margin-top: 18px;
+    padding: 14px;
+    background: #1c1c1c;
+    border-radius: 12px;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+
+#selectedApp,
+#selectedTime {
+    color: #7ed957;
+    font-weight: bold;
+}
+
+.start-btn {
+    width: 100%;
+    height: 58px;
+    margin-top: 24px;
+    border: none;
+    border-radius: 14px;
+    background: #7ed957;
+    color: #111;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.start-btn:hover {
+    background: #91e96a;
+}
+
+.start-btn:active {
+    transform: scale(0.98);
+}
+
+.note {
+    text-align: center;
+    color: #777;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        🦁 Lion Focus
+    </div>
+
+    <div class="subtitle">
+        Choose what Lion should monitor
+    </div>
+
+
+    <!-- APP -->
+
+    <div class="section-title">
+        SELECT APP
+    </div>
+
+    <div class="app-grid">
+
+        <button
+            class="app-btn selected"
+            data-app="chrome">
+            🌐<br>
+            Chrome
+        </button>
+
+        <button
+            class="app-btn"
+            data-app="vscode">
+            💻<br>
+            VS Code
+        </button>
+
+        <button
+            class="app-btn"
+            data-app="discord">
+            💬<br>
+            Discord
+        </button>
+
+        <button
+            class="app-btn"
+            data-app="other">
+            📁<br>
+            Other App
+        </button>
+
+    </div>
+
+
+    <!-- TIME -->
+
+    <div class="section-title">
+        TIME LIMIT
+    </div>
+
+    <div class="time-grid">
+
+        <button
+            class="time-btn"
+            data-time="60000">
+            1 Minute
+        </button>
+
+        <button
+            class="time-btn"
+            data-time="300000">
+            5 Minutes
+        </button>
+
+        <button
+            class="time-btn"
+            data-time="600000">
+            10 Minutes
+        </button>
+
+        <button
+            class="time-btn"
+            data-time="1200000">
+            20 Minutes
+        </button>
+
+        <button
+            class="time-btn selected"
+            data-time="1800000">
+            30 Minutes
+        </button>
+
+        <button
+            class="time-btn"
+            data-time="3600000">
+            1 Hour
+        </button>
+
+    </div>
+
+
+    <!-- SELECTED -->
+
+    <div class="selected-info">
+
+        App:
+        <span id="selectedApp">Chrome</span>
+
+        <br><br>
+
+        Time:
+        <span id="selectedTime">30 Minutes</span>
+
+    </div>
+
+
+    <!-- SAVE -->
+
+    <button
+        class="start-btn"
+        id="startBtn">
+
+        🦁 SAVE & START
+
+    </button>
+
+
+    <div class="note">
+        Lion will monitor the selected application.
+    </div>
+
+</div>
+
+
+<script>
+
+const { ipcRenderer } = require("electron");
+
+
+const appButtons =
+    document.querySelectorAll(".app-btn");
+
+const timeButtons =
+    document.querySelectorAll(".time-btn");
+
+const selectedApp =
+    document.getElementById("selectedApp");
+
+const selectedTime =
+    document.getElementById("selectedTime");
+
+const startBtn =
+    document.getElementById("startBtn");
+
+
+let selectedAppName = "chrome";
+
+let selectedLimit = 1800000;
+
+
+/* APP SELECTION */
+
+appButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        appButtons.forEach(btn => {
+            btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+
+        selectedAppName =
+            button.dataset.app;
+
+        selectedApp.innerText =
+            button.innerText
+                .replace("🌐", "")
+                .replace("💻", "")
+                .replace("💬", "")
+                .replace("📁", "")
+                .trim();
+
+    });
+
+});
+
+
+/* TIME SELECTION */
+
+timeButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        timeButtons.forEach(btn => {
+            btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+
+        selectedLimit =
+            Number(button.dataset.time);
+
+        selectedTime.innerText =
+            button.innerText;
+
+    });
+
+});
+
+
+/* SAVE */
+
+startBtn.addEventListener("click", () => {
+
+    ipcRenderer.send(
+        "set-selected-app",
+        selectedAppName
+    );
+
+    ipcRenderer.send(
+        "set-limit-time",
+        selectedLimit
+    );
+
+
+    localStorage.setItem(
+        "lionSelectedApp",
+        selectedAppName
+    );
+
+    localStorage.setItem(
+        "lionLimitTime",
+        selectedLimit
+    );
+
+    localStorage.setItem(
+        "lionLimitName",
+        selectedTime.innerText
+    );
+
+
+    startBtn.innerText =
+        "✓ SAVED!";
+
+
+    setTimeout(() => {
+
+        startBtn.innerText =
+            "🦁 SAVE & START";
+
+    }, 1200);
+
+});
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Lion Focus</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:transparent;
+}
+
+#screen{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+/* =========================
+   LION
+========================= */
+
+#lion{
+    position:absolute;
+
+    left:20px;
+    top:70%;
+
+    width:250px;
+    height:220px;
+
+    z-index:999999;
+
+    transform:translateY(-50%);
+
+    opacity:0;
+
+    pointer-events:none;
+}
+
+#lion.visible{
+    opacity:1;
+}
+
+/* =========================
+   WALKING
+========================= */
+
+#lion.walking{
+    animation:lionBounce .36s infinite alternate;
+}
+
+@keyframes lionBounce{
+
+    from{
+        transform:
+            translateY(-50%)
+            rotate(-1deg);
+    }
+
+    to{
+        transform:
+            translateY(calc(-50% - 6px))
+            rotate(1deg);
+    }
+}
+
+/* =========================
+   LEGS
+========================= */
+
+.leg{
+    transform-box:fill-box;
+    transform-origin:top center;
+}
+
+#lion.walking .legA{
+    animation:walkA .36s infinite alternate;
+}
+
+#lion.walking .legB{
+    animation:walkB .36s infinite alternate;
+}
+
+@keyframes walkA{
+
+    from{
+        transform:rotate(12deg);
+    }
+
+    to{
+        transform:rotate(-12deg);
+    }
+}
+
+@keyframes walkB{
+
+    from{
+        transform:rotate(-12deg);
+    }
+
+    to{
+        transform:rotate(12deg);
+    }
+}
+
+/* =========================
+   TAIL
+========================= */
+
+.tail{
+    transform-origin:170px 112px;
+}
+
+#lion.walking .tail{
+    animation:tailWag .45s infinite alternate;
+}
+
+@keyframes tailWag{
+
+    from{
+        transform:rotate(-8deg);
+    }
+
+    to{
+        transform:rotate(12deg);
+    }
+}
+
+/* =========================
+   HIT
+========================= */
+
+#lion.hit{
+    animation:hitShake .12s infinite alternate;
+}
+
+@keyframes hitShake{
+
+    from{
+        transform:
+            translateY(-50%)
+            rotate(-8deg)
+            scale(1);
+    }
+
+    to{
+        transform:
+            translateY(-50%)
+            rotate(8deg)
+            scale(1.12);
+    }
+}
+
+/* =========================
+   EXPLOSION
+========================= */
+
+#boom{
+
+    position:absolute;
+
+    display:none;
+
+    font-size:90px;
+
+    z-index:1000000;
+
+    transform:
+        translate(-50%,-50%);
+}
+
+#boom.show{
+
+    display:block;
+
+    animation:explosion .5s ease-out;
+}
+
+@keyframes explosion{
+
+    0%{
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(.1);
+    }
+
+    40%{
+        opacity:1;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1.5);
+    }
+
+    100%{
+        opacity:1;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+    }
+}
+
+/* =========================
+   STATUS
+========================= */
+
+#status{
+
+    position:absolute;
+
+    left:25px;
+    top:25px;
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    background:rgba(0,0,0,.65);
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    font-size:13px;
+
+    opacity:.7;
+
+    z-index:1000001;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="screen">
+
+<div id="status">
+🦁 Focus: waiting...
+</div>
+
+<div id="lion">
+
+<svg
+viewBox="0 0 250 220"
+xmlns="http://www.w3.org/2000/svg"
+aria-label="Cute muscular lion"
+
+>
+
+<!-- TAIL -->
+
+<path
+class="tail"
+d="M170 112
+C205 91 229 103 220 128
+C215 142 227 151 238 137"
+fill="none"
+stroke="#D98527"
+stroke-width="14"
+stroke-linecap="round"
+/>
+
+<circle
+cx="238"
+cy="137"
+r="13"
+fill="#713C16"
+/>
+
+<!-- BACK LEG 1 -->
+
+<g class="leg legA">
+
+<path
+d="M153 136
+C153 153 153 173 157 190
+L179 190
+C183 171 179 151 174 133Z"
+fill="#D98527"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<ellipse
+cx="168"
+cy="191"
+rx="18"
+ry="8"
+fill="#915119"
+/>
+
+</g>
+
+<!-- BACK LEG 2 -->
+
+<g class="leg legB">
+
+<path
+d="M178 135
+C181 153 186 174 188 190
+L211 190
+C211 169 202 148 197 132Z"
+fill="#E29A35"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<ellipse
+cx="199"
+cy="191"
+rx="18"
+ry="8"
+fill="#915119"
+/>
+
+</g>
+
+<!-- BODY -->
+
+<path
+d="M72 89
+C83 70 111 65 143 70
+C171 73 194 90 196 116
+C198 142 179 159 151 163
+L99 163
+C70 159 53 141 55 115
+C56 103 62 95 72 89Z"
+fill="#D98527"
+stroke="#743E13"
+stroke-width="6"
+/>
+
+<!-- CHEST -->
+
+<path
+d="M82 91
+C95 78 119 77 131 91
+C140 104 136 135 123 153
+C112 162 94 157 84 146
+C74 129 74 104 82 91Z"
+fill="#F2BC65"
+/>
+
+<path
+d="M105 91
+C101 109 102 135 108 151"
+fill="none"
+stroke="#D49742"
+stroke-width="4"
+stroke-linecap="round"
+/>
+
+<!-- SHOULDERS -->
+
+<ellipse
+cx="71"
+cy="109"
+rx="24"
+ry="31"
+fill="#C87620"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<ellipse
+cx="143"
+cy="102"
+rx="26"
+ry="31"
+fill="#C87620"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<!-- FRONT LEG 1 -->
+
+<g class="leg legB">
+
+<path
+d="M69 125
+C67 146 65 172 69 190
+L91 190
+C95 170 94 146 88 124Z"
+fill="#D98527"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<ellipse
+cx="80"
+cy="191"
+rx="18"
+ry="8"
+fill="#915119"
+/>
+
+</g>
+
+<!-- FRONT LEG 2 -->
+
+<g class="leg legA">
+
+<path
+d="M94 127
+C92 148 95 173 98 190
+L120 190
+C123 169 117 145 113 126Z"
+fill="#E29A35"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<ellipse
+cx="109"
+cy="191"
+rx="18"
+ry="8"
+fill="#915119"
+/>
+
+</g>
+
+<!-- MANE -->
+
+<path
+d="M18 52
+C8 34 23 16 43 21
+C39 5 59 -3 73 12
+C84 -3 106 5 108 23
+C127 17 142 34 132 50
+C149 58 147 80 132 88
+C140 105 121 120 104 111
+C94 128 72 127 63 110
+C44 119 26 106 30 91
+C10 86 7 65 18 52Z"
+fill="#713C16"
+stroke="#4D280D"
+stroke-width="6"
+/>
+
+<path
+d="M29 49
+C19 62 23 76 32 83"
+fill="none"
+stroke="#935522"
+stroke-width="7"
+stroke-linecap="round"
+/>
+
+<path
+d="M112 43
+C127 53 130 69 121 79"
+fill="none"
+stroke="#935522"
+stroke-width="7"
+stroke-linecap="round"
+/>
+
+<!-- FACE -->
+
+<ellipse
+cx="69"
+cy="62"
+rx="45"
+ry="43"
+fill="#E39A38"
+stroke="#743E13"
+stroke-width="6"
+/>
+
+<!-- EARS -->
+
+<circle
+cx="35"
+cy="31"
+r="17"
+fill="#D98527"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<circle
+cx="103"
+cy="31"
+r="17"
+fill="#D98527"
+stroke="#743E13"
+stroke-width="5"
+/>
+
+<circle
+cx="35"
+cy="31"
+r="8"
+fill="#F19A72"
+/>
+
+<circle
+cx="103"
+cy="31"
+r="8"
+fill="#F19A72"
+/>
+
+<!-- MUZZLE -->
+
+<ellipse
+cx="69"
+cy="78"
+rx="29"
+ry="22"
+fill="#F4C572"
+/>
+
+<!-- EYES -->
+
+<ellipse
+cx="51"
+cy="57"
+rx="8"
+ry="10"
+fill="#17110C"
+/>
+
+<ellipse
+cx="86"
+cy="57"
+rx="8"
+ry="10"
+fill="#17110C"
+/>
+
+<circle
+cx="53"
+cy="54"
+r="3"
+fill="white"
+/>
+
+<circle
+cx="88"
+cy="54"
+r="3"
+fill="white"
+/>
+
+<!-- EYEBROWS -->
+
+<path
+d="M41 46
+Q51 40 60 46"
+fill="none"
+stroke="#743E13"
+stroke-width="5"
+stroke-linecap="round"
+/>
+
+<path
+d="M77 46
+Q87 40 96 46"
+fill="none"
+stroke="#743E13"
+stroke-width="5"
+stroke-linecap="round"
+/>
+
+<!-- NOSE -->
+
+<path
+d="M59 70
+Q69 64 79 70
+Q77 80 69 81
+Q61 80 59 70Z"
+fill="#392015"
+/>
+
+<!-- MOUTH -->
+
+<path
+d="M69 80
+Q62 89 54 84"
+fill="none"
+stroke="#392015"
+stroke-width="4"
+stroke-linecap="round"
+/>
+
+<path
+d="M69 80
+Q76 89 84 84"
+fill="none"
+stroke="#392015"
+stroke-width="4"
+stroke-linecap="round"
+/>
+
+<!-- MUSCLE DETAILS -->
+
+<path
+d="M63 105
+C53 115 55 132 64 141"
+fill="none"
+stroke="#B96D1E"
+stroke-width="13"
+stroke-linecap="round"
+/>
+
+<path
+d="M133 98
+C147 105 151 121 145 135"
+fill="none"
+stroke="#B96D1E"
+stroke-width="13"
+stroke-linecap="round"
+/>
+
+</svg>
+
+</div>
+
+<div id="boom">
+💥
+</div>
+
+</div>
+
+<script>
+
+const { ipcRenderer } = require("electron");
+
+const lion =
+    document.getElementById("lion");
+
+const boom =
+    document.getElementById("boom");
+
+const status =
+    document.getElementById("status");
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetLion(){
+
+    lion.classList.remove("walking");
+    lion.classList.remove("hit");
+    lion.classList.remove("visible");
+
+    boom.classList.remove("show");
+
+    lion.style.transition = "none";
+
+    lion.style.left = "20px";
+
+    lion.style.top = "70%";
+
+    lion.style.opacity = "0";
+
+    void lion.offsetWidth;
+
+    lion.style.transition =
+        "left 3s linear, top .25s ease, opacity .25s ease";
+
+    status.textContent =
+        "🦁 Focus: waiting...";
+}
+
+
+/* =========================
+   TIMER
+========================= */
+
+ipcRenderer.on(
+    "timer-update",
+    (event,data)=>{
+
+        const seconds =
+            Number(data.seconds) || 0;
+
+        const process =
+            data.process || "App";
+
+        status.textContent =
+            `🦁 ${process} — ${seconds}/1800 sec`;
+    }
+);
+
+
+/* =========================
+   ATTACK
+========================= */
+
+ipcRenderer.on(
+    "attack",
+    (event,data)=>{
+
+        const targetLeft =
+            Number(data.left) || 0;
+
+        const targetRight =
+            Number(data.right) || 0;
+
+        const targetTop =
+            Number(data.top) || 0;
+
+        const targetBottom =
+            Number(data.bottom) || 0;
+
+
+        const targetX =
+            targetLeft +
+            ((targetRight-targetLeft)*0.35);
+
+        const targetY =
+            targetTop +
+            ((targetBottom-targetTop)*0.70);
+
+
+        /* Reset starting position */
+
+        lion.classList.remove("walking");
+        lion.classList.remove("hit");
+
+        lion.style.transition =
+            "none";
+
+        lion.style.left =
+            "20px";
+
+        lion.style.top =
+            `${targetY}px`;
+
+
+        /*
+         * IMPORTANT FIX
+         *
+         * Make lion visible immediately
+         * when attack event arrives.
+         */
+
+        lion.style.opacity =
+            "1";
+
+        lion.classList.add("visible");
+
+
+        /*
+         * Small delay so the browser
+         * renders the lion first.
+         */
+
+        setTimeout(()=>{
+
+            lion.classList.add("walking");
+
+            lion.style.transition =
+                "left 3s linear";
+
+            lion.style.left =
+                `${Math.max(
+                    20,
+                    targetX - 100
+                )}px`;
+
+        },150);
+
+
+        /*
+         * HIT
+         */
+
+        setTimeout(()=>{
+
+            lion.classList.remove("walking");
+
+            lion.classList.add("hit");
+
+            boom.style.left =
+                `${targetX}px`;
+
+            boom.style.top =
+                `${targetY}px`;
+
+            boom.classList.add("show");
+
+            status.textContent =
+                "🦁💥 HIT! Closing app...";
+
+        },3200);
+
+
+        /*
+         * DISAPPEAR
+         */
+
+        setTimeout(()=>{
+
+            lion.classList.remove("hit");
+
+            lion.classList.remove("walking");
+
+            lion.style.transition =
+                "opacity .45s ease";
+
+            lion.style.opacity =
+                "0";
+
+        },4000);
+
+    }
+);
+
+
+/* =========================
+   RESET EVENT
+========================= */
+
+ipcRenderer.on(
+    "reset-lion",
+    ()=>{
+        resetLion();
+    }
+);
+
+
+/* =========================
+   START HIDDEN
+========================= */
+
+resetLion();
+
+</script>
+
+</body>
+</html>
